@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<div class="main-content">
+    <h2>Список всех цитат</h2>
     {% for note in notes %}
-    <div>
-        <h3>{{note.title}}</h3><br>
+    <div class="post-card">
+        <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3><br>
         <p>{{note.text}}</p>
-    </div>
+    </div><br>
     {% endfor %}
+
+</div>
+
 
 {% endblock %}
 

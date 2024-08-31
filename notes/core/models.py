@@ -19,6 +19,7 @@ class Note(models.Model):
     
     title = models.CharField( max_length=255 )
     text = models.TextField( )
+    author = models.CharField( max_length=255, default='Автор неизвестен' )
     created_date = models.DateTimeField( auto_now_add=True )
     category = models.ForeignKey(NoteCategory, blank=True, null=True,on_delete=models.SET_NULL,related_name='category_notes' )
 

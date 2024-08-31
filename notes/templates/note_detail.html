@@ -1,8 +1,16 @@
+<!-- HTML-шаблон, страницы выбранной цитаты -->
+
 {% extends 'base.html' %}
 {% block content %}
-<div class="post-card">
-    <p>{{note.text}}</p>
-</div>
 
+<!-- Блок выбранной цитаты -->
+<div class="post-card">
+    <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>
+    <div>
+        <p>{{note.text}}</p>
+        <p class="author-signature">{{note.author}}</p>
+    </div>
+    
+</div>
 
 {% endblock %}

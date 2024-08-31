@@ -25,5 +25,8 @@ def note_add(request):
         category = NoteCategory.objects.get(id=category_id)
         Note.objects.create(title=title,text=text,category=category)
         return redirect(notes)
-    
     return render(request,'note_add.html',{'categories':categories})
+
+def note_detail(request, note_id):
+    note = Note.objects.get(id=note_id)
+    return render(request,'note_detail.html',{'note':note})

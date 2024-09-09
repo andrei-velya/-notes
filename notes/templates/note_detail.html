@@ -3,14 +3,37 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- Блок выбранной цитаты -->
-<div class="post-card">
-    <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>
-    <div>
-        <p>{{note.text}}</p>
-        <p class="author-signature">{{note.author}}</p>
+<div class="container-post">
+    <!-- Блок выбранной цитаты -->
+    <div class="post-card">
+        <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>
+        <div>
+            <p>{{note.text}}</p>
+            <p class="author-signature">{{note.author}}</p>
+        </div>
     </div>
-    
+    <!-- Блок комментариев -->
+    <div class="comments-section">
+        <h4>Комментарии ({{ comments|length }})</h4>
+        {% for comment in comments %}
+        <div class="comment">
+            <p class="comment-author">{{comment.author}}</p>
+            <p class="comment-date">{{comment.date}}</p>
+            <p class="comment-text">{{comment.text}}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Блок формы добавления комментариев -->
+    <div class="comment-form">
+        <h4>Добавить комментарий</h4>
+        <form action="{% url 'note_detail' note.id %}" method="post">
+            {% csrf_token %}
+            <label for="text">комментарий</label>
+            <textarea id="text" name="text" required></textarea>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
 </div>
+
 
 {% endblock %}

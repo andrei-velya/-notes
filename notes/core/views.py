@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Note, NoteCategory
+from .models import Note, NoteCategory, NoteComment
+from .forms import CommentAddForm
+from django.http import Http404
 
 # Create your views here.
 
@@ -42,6 +44,25 @@ def note_add(request):
         return redirect(notes)
     return render(request,'note_add.html',{'categories':categories})
 
-def note_detail(request, note_id):
-    note = Note.objects.get(id=note_id)
-    return render(request,'note_detail.html',{'note':note})
+def note_detail( request, note_id ):
+    note = Note.objects.get( id = note_id )
+    comments_of_the_post = NoteComment.objects.filter( note = note )
+    comment_add_form = CommentAddForm()
+    if request.method == 'POST':
+        comment_form = CommentAddForm( request.POST )
+        note = Note.objects.get( id = note_id )
+        if comment_form.is_valid():
+            data = comment_form.cleaned_data
+            NoteComment.objects.create(
+                note = note,
+                text = data['text']
+            )
+            return redirect('note_detail',note_id) 
+        else:
+            raise Http404
+    context ={
+        'note':note,
+        'comments':comments_of_the_post,
+        'comment_add_form':comment_add_form
+        }
+    return render(request,'note_detail.html',context)

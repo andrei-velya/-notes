@@ -16,6 +16,17 @@
             "autoStartBrowser": false,
             "program": "${workspaceFolder}\\notes\\manage.py",
             "cwd": "${workspaceFolder}\\notes",
-        }
+        },
+        {
+            "name": "Python: Runserver",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}\\notes\\manage.py",
+            "cwd": "${workspaceFolder}\\notes",
+            "args": [
+                "runserver",
+            ],
+            "django": true
+        },
     ]
 }

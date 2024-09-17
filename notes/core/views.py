@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Note, NoteCategory, NoteComment
-from .forms import CommentAddForm
+from .forms import CommentAddForm, NoteAddForm
 from django.http import Http404
 
 # Create your views here.
@@ -28,38 +28,51 @@ def notes(request):
 
 def note_add(request):
     categories = NoteCategory.objects.all()
+    note_add_form = NoteAddForm()
 
     if request.method == 'POST':
-        title = request.POST.get('title')
-        text = request.POST.get('text')
-        author = request.POST.get('author')
-        category_id = request.POST.get('category')
+        note_add_form = NoteAddForm( request.POST )
 
-        if title == '' or text == '':
-            blankFieldErrorMessage = 'У вас пустое поле'
-            return render(request, 'note_add.html', {'error':blankFieldErrorMessage})
-        
-        category = NoteCategory.objects.get(id=category_id)
-        Note.objects.create(title=title,text=text,category=category,author=author)
+        if note_add_form.is_valid():
+            data = note_add_form.cleaned_data
+            Note.objects.create(
+                                title = data['title'],
+                                text = data['text'],
+                                author = data['author'],
+                                category = data['category']
+                                )
+
         return redirect(notes)
-    return render(request,'note_add.html',{'categories':categories})
+    
+    context = {
+               'categories':categories,
+               'note_add_form':note_add_form
+               }
+    
+    return render( request, 'note_add.html', context)
 
 def note_detail( request, note_id ):
     note = Note.objects.get( id = note_id )
     comments_of_the_post = NoteComment.objects.filter( note = note )
     comment_add_form = CommentAddForm()
+
     if request.method == 'POST':
         comment_form = CommentAddForm( request.POST )
         note = Note.objects.get( id = note_id )
+
         if comment_form.is_valid():
             data = comment_form.cleaned_data
             NoteComment.objects.create(
                 note = note,
                 text = data['text']
             )
+
             return redirect('note_detail',note_id) 
+        
         else:
+
             raise Http404
+        
     context ={
         'note':note,
         'comments':comments_of_the_post,

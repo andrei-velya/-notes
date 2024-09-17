@@ -1,33 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        <h1>Добавление записи</h1>
+{% extends 'base.html' %}
+{% block content %}
+<div class="main-content">
+    <h1>Добавление записи</h1>
+    <br>
+    <div class="post-card">
         <form action = "{% url 'note_add' %}" method="post">
             {% csrf_token%}
-            
-            <label for="title">Заголовок</label>
-            <input id="title" name="title" type="text"><br>
-
-            <label for="text">Текст</label>
-            <textarea id="text" name="text" type="text"></textarea><br>
-
-            <label for="author">Автор</label>
-            <input id="author" name="author" type="text"><br>
-
-            <select name="category" id="category">
-                {% for category in categories %}
-                <option value="{{ category.id }}">{{category.title}}</option>
-                {% endfor %}
-            </select>
-
+            {{ note_add_form }}
             <input type="submit" value="Добавить!">
         </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

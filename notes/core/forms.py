@@ -10,3 +10,8 @@ class NoteAddForm(forms.Form):
     text = forms.CharField( label='Введите цитату', max_length=1024, widget=forms.Textarea )
     author = forms.CharField( label='Автор', max_length=100 )
     category = forms.ModelChoiceField( label='Категория', queryset=NoteCategory.objects.all() )
+
+class FeedbackForm(forms.Form):
+    name = forms.CharField( label='Имя' )
+    text = forms.CharField(label='Текст',widget=forms.Textarea )
+    

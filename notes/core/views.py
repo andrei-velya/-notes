@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Note, NoteCategory, NoteComment
-from .forms import CommentAddForm, NoteAddForm
+from .models import *
+from .forms import *
 from django.http import Http404
 
 # Create your views here.
@@ -79,3 +79,23 @@ def note_detail( request, note_id ):
         'comment_add_form':comment_add_form
         }
     return render(request,'note_detail.html',context)
+
+def feedback( request ):
+    form = FeedbackForm()
+
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            Feedback.objects.create(
+                                    name = data['name'],
+                                    text = data['text']
+                                    )
+            return redirect('feedback_success')
+    context = { 'feedback_add_form':form }
+    return render(request, 'feedback.html',context)
+
+def feedback_success(request):
+    return render(request, 'feedback_success.html')
+    

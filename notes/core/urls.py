@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from.views import main, notes, note_detail, note_add
+from.views import *
 
 urlpatterns = [
     path('', main, name='main'),
     path( 'notes', notes, name='notes' ),
     path( 'notes/<int:note_id>', note_detail, name='note_detail' ),
     path('note_add', note_add, name='note_add'),
+    path('feedback',feedback, name='feedback'),
+    path('feedback/success',feedback_success, name='feedback_success')
 ]

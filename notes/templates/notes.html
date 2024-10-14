@@ -7,6 +7,11 @@
 <div class="main-content">
     <h2>Список всех цитат</h2>
 
+    <form class="d-flex mb-4" role="search" action="{% url 'notes_search' %}">
+        <input value="{{ search_text }}" name="text" class="form-control me-2" type="search" placeholder="Найти" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Найти</button>
+    </form>
+
     {% for note in notes %}
     <div class="post-card">
         <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>

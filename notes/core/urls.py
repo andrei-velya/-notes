@@ -21,6 +21,7 @@ from.views import *
 urlpatterns = [
     path('', main, name='main'),
     path( 'notes', notes, name='notes' ),
+    path('notes/search',notes_search, name='notes_search'),
     path( 'notes/<int:note_id>', note_detail, name='note_detail' ),
     path('note_add', note_add, name='note_add'),
     path('feedback',feedback, name='feedback'),

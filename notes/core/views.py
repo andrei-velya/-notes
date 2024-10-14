@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.views.generic import TemplateView, CreateView, ListView
 from .models import *
 from .forms import *
 from django.http import Http404
@@ -99,3 +102,25 @@ def feedback( request ):
 def feedback_success(request):
     return render(request, 'feedback_success.html')
     
+def notes_search(request):
+    notes = Note.objects.all()
+
+    text = request.GET.get('text')
+    
+    if text:
+        notes = notes.filter(Q(title__icontains=text)|Q(text__icontains=text))
+ 
+    #    пагинация
+    page = request.GET.get('page', 1)
+    p = Paginator(notes, 5)
+    page_objects = p.get_page(page)
+
+    categories = NoteCategory.objects.all()
+
+    context = {
+        'page_obj': page_objects,
+        'categories': categories,
+        'search_text': text
+    }
+
+    return render(request, 'notes.html', context)

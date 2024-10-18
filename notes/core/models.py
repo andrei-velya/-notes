@@ -1,5 +1,6 @@
 from django.db import models
 from django import forms
+from user.models import Profile
 
 # Create your models here.
 
@@ -31,6 +32,12 @@ class Note(models.Model):
                                  related_name='category_notes',
                                  default='Разное'
                                  )
+    profile = models.ForeignKey(Profile,
+                                related_name='profile_notes',
+                                on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
 
 class NoteComment(models.Model):
 
@@ -60,3 +67,16 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class NoteFavorite(models.Model):
+    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='note_favorite')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_favorites')
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Цитата в избранном'
+        verbose_name_plural = 'Цитаты в избранном'
+
+    def __str__(self):
+        return f"{self.note}-{self.profile.user}"

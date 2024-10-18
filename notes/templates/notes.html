@@ -12,6 +12,16 @@
         <button class="btn btn-outline-success" type="submit">Найти</button>
     </form>
 
+    {% for note in page_obj.object_list %}
+    <div class="post-card">
+        <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>
+        <div>
+            <p>{{note.text}}</p>
+            <p class="author-signature">{{note.author}}</p>
+        </div> 
+    </div>
+    {% endfor %}
+
     {% for note in notes %}
     <div class="post-card">
         <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>

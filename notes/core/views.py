@@ -1,8 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView, CreateView, ListView
-from .models import *
+from .models import Note,NoteComment,NoteFavorite
 from .forms import *
 from django.http import Http404
 
@@ -29,6 +30,7 @@ def notes(request):
 
     return render(request, 'notes.html', context)
 
+@login_required
 def note_add(request):
     categories = NoteCategory.objects.all()
     note_add_form = NoteAddForm()
@@ -55,13 +57,21 @@ def note_add(request):
     return render( request, 'note_add.html', context)
 
 def note_detail( request, note_id ):
+    context = {}
+
     note = Note.objects.get( id = note_id )
-    comments_of_the_post = NoteComment.objects.filter( note = note )
+    comments_of_the_note = NoteComment.objects.filter( note = note )
     comment_add_form = CommentAddForm()
+
+    if request.user.is_authenticated:
+        # проверка текущего пользователя является ли цитата любимой
+        is_favorite = NoteFavorite.objects.filter(note=note, profile=request.user.profile).exists()
+        print( is_favorite )
+        # дополнение контекста новой инфой
+        context.update({ "is_favorite" : is_favorite })
 
     if request.method == 'POST':
         comment_form = CommentAddForm( request.POST )
-        note = Note.objects.get( id = note_id )
 
         if comment_form.is_valid():
             data = comment_form.cleaned_data
@@ -78,7 +88,7 @@ def note_detail( request, note_id ):
         
     context ={
         'note':note,
-        'comments':comments_of_the_post,
+        'comments':comments_of_the_note,
         'comment_add_form':comment_add_form
         }
     return render(request,'note_detail.html',context)
@@ -124,3 +134,22 @@ def notes_search(request):
     }
 
     return render(request, 'notes.html', context)
+
+
+@login_required
+def add_to_favorite(request, note_id):
+    redirect_url = request.GET.get('next')
+    note = Note.objects.get(id=note_id)
+    profile = request.user.profile
+    NoteFavorite.objects.get_or_create(note=note, profile=profile)
+    
+    return redirect(redirect_url)
+
+@login_required
+def remove_from_favorite(request, note_id):
+    redirect_url = request.GET.get('next')
+    note = Note.objects.get(id=note_id)
+    profile = request.user.profile
+    NoteFavorite.objects.filter(note=note, profile=profile).delete()
+    
+    return redirect(redirect_url)

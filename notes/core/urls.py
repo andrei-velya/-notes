@@ -25,5 +25,8 @@ urlpatterns = [
     path( 'notes/<int:note_id>', note_detail, name='note_detail' ),
     path('note_add', note_add, name='note_add'),
     path('feedback',feedback, name='feedback'),
-    path('feedback/success',feedback_success, name='feedback_success')
+    path('feedback/success',feedback_success, name='feedback_success'),
+    
+    path('favorite/<int:note_id>',add_to_favorite, name='add_to_favorite'),
+    path('not_favorite/<int:note_id>',remove_from_favorite, name='remove_from_favorite')
 ]

@@ -12,6 +12,15 @@
             <p class="author-signature">{{note.author}}</p>
         </div>
     </div>
+
+    <p>Избранное: {{ is_favorite }}</p>
+
+    {% if not is_favorite %}
+        <div><b><a href="{% url 'add_to_favorite' note.id %}?next={% url 'note_detail' note.id %}">Добавить в избранное</a></b></div>
+    {% else %}
+        <div><b><a href="{% url 'remove_from_favorite' note.id %}?next={% url 'note_detail' note.id %}">Удалить из избранного</a></b></div>
+    {% endif %}
+
     <!-- Блок комментариев -->
     <div class="comments-section">
         <h4>Комментарии ({{ comments|length }})</h4>

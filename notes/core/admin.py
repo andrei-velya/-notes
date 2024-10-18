@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(Note)
 admin.site.register(NoteCategory)
 admin.site.register(Feedback)
+admin.site.register(NoteFavorite)

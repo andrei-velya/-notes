@@ -3,6 +3,15 @@ from django import forms
 from user.models import Profile
 
 # Create your models here.
+class Author(models.Model):
+    name = models.CharField( max_length=255, unique=True )  
+
+    class Meta:
+        verbose_name = 'Автор цитат'
+        verbose_name_plural = 'Авторы цитат'
+
+    def __str__(self):
+        return self.name
 
 class NoteCategory(models.Model):
     class Meta:
@@ -22,7 +31,15 @@ class Note(models.Model):
     
     title = models.CharField( max_length=255, null=False )
     text = models.TextField( null=False )
-    author = models.CharField( max_length=255, default='Автор неизвестен', null=False )
+    author = models.ForeignKey(
+                               Author,
+                               blank=True,
+                               null=True,
+                               on_delete=models.SET_DEFAULT,
+                               related_name='note_author',
+                               default='Автор неизвестен',
+                               to_field='name'                      
+                               )
     created_date = models.DateTimeField( auto_now_add=True )
     category = models.ForeignKey(
                                  NoteCategory, 
@@ -67,16 +84,41 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.name
-    
 
+class Subscription(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
+                                related_name='profile_followers')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE,
+                                related_name='profile_following')
+
+    class Meta:
+        verbose_name = 'Подписка на мудреца'
+        verbose_name_plural = 'Подписки на мудреца'
+
+    def __str__(self):
+        return f'{self.profile.user.username} подписан на {self.author}'
+
+
+class NoteLike(models.Model):
+    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='note_likes')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_likes')
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Лайк цитаты'
+        verbose_name_plural = 'Лайки цитат'
+
+    def __str__(self):
+        return f"{self.note}-{self.profile.user}"
+    
 class NoteFavorite(models.Model):
-    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='note_favorite')
+    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='note_favorites')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='profile_favorites')
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Цитата в избранном'
-        verbose_name_plural = 'Цитаты в избранном'
+        verbose_name = 'Избраная цитата'
+        verbose_name_plural = 'Избранные цитаты'
 
     def __str__(self):
         return f"{self.note}-{self.profile.user}"

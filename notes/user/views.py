@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, logout as auth_logout, get_user_model, authenticate
 
-from core.models import Note, NoteFavorite
+from core.models import Note, Subscription, NoteLike
 from .forms import LoginForm, RegisterForm
 from .models import Profile
 
@@ -59,21 +59,11 @@ def register(request):
 @login_required
 def home(request):
     profile = request.user.profile
-
     notes = profile.profile_notes.all()
+    subscriptions = Subscription.objects.filter(profile=profile)
+    noteLikes = NoteLike.objects.filter(profile=profile)
 
     # # альтернатиный вариант получения постов пользователя
     # notes = Note.objects.filter(profile=profile)
 
-    return render(request, 'user/home.html', {'notes': notes})
-
-""" @login_required
-def favorites(request):
-    profile = request.user.profile
-
-    favorite_notes = NoteFavorite.objects.filter(note=note.id, profile=request.user.profile)
-
-    # # альтернатиный вариант получения постов пользователя
-    # notes = Note.objects.filter(profile=profile)
-
-    return render(request, 'user/home.html', {'notes': notes}) """
+    return render(request, 'user/home.html', {'notes': notes, 'subscriptions':subscriptions,'noteLikes':noteLikes})

@@ -1,7 +1,7 @@
 # Задача сделать форму обработки добавления поста
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import NoteCategory, Feedback, NoteFavorite
+from .models import NoteCategory, Feedback
 
 class CommentAddForm(forms.Form):
     text = forms.CharField( max_length = 250, widget=forms.Textarea )

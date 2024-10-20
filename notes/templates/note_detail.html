@@ -12,13 +12,28 @@
             <p class="author-signature">{{note.author}}</p>
         </div>
     </div>
+    {% if user.is_authenticated %}
+        <a type=button {% if is_subscribed %} style="display:none" {% endif %} id="subscribeButton"
+        href="{% url 'subscribe' note.author.id %}?next={% url 'note_detail' note.id %}"
+        class="btn btn-primary">
+        Подписаться на автора цитаты
+        </a>
+        <a type=button {% if not is_subscribed %} style="display:none" {% endif %} id="subscribeButton"
+        href="{% url 'unsubscribe' note.author.id %}?next={% url 'note_detail' note.id %}"
+        class="btn btn-outline-primary">
+        Отписаться от автора цитаты
+        </a> 
+    {% endif%}
 
-    <p>Избранное: {{ is_favorite }}</p>
+    {% if user.is_authenticated %}
+    <i class="bi bi-hand-thumbs-up"></i>
 
-    {% if not is_favorite %}
-        <div><b><a href="{% url 'add_to_favorite' note.id %}?next={% url 'note_detail' note.id %}">Добавить в избранное</a></b></div>
-    {% else %}
-        <div><b><a href="{% url 'remove_from_favorite' note.id %}?next={% url 'note_detail' note.id %}">Удалить из избранного</a></b></div>
+    <a type="button" {% if is_liked %} style="display:none" {% endif %} id="likeButton"
+       href="{% url 'note_like' note.id %}?next={% url 'note_detail' note.id %}"
+       class="btn btn-primary">Избранное</a>
+    <a type="button" {% if not is_liked %} style="display:none" {% endif %} id="unlikeButton"
+       href="{% url 'note_unlike' note.id %}?next={% url 'note_detail' note.id %}" class="btn btn-outline-primary"
+       >Убрать из избранного</a>
     {% endif %}
 
     <!-- Блок комментариев -->

@@ -47,6 +47,16 @@
         
         {% endfor %}
     </ul>
+    <h2>Выбор автора</h2>
+    <ul>
+        {% for author in authors %}
+            {% if author.id == active_author.id   %}
+                <li><a href="?author={{author.id}}"><b>{{author.name}}</b></a></li>
+            {% else %}
+                <li><a href="?author={{author.id}}">{{author.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
 
 </aside>
 

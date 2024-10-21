@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="main-content">
+    <h1>Редактирование записи</h1>
+    <br>
+    <div class="post-card">
+        <form action = "{% url 'note_edit' form.instance.id %}" method="post">
+            {% csrf_token%}
+            {{ form }}
+            <input type="submit" value="Редактировать!">
+        </form>
+    </div>
+</div>
+{% endblock %}

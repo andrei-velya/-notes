@@ -1,16 +1,33 @@
 # Задача сделать форму обработки добавления поста
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import NoteCategory, Feedback
+from .models import NoteCategory, Feedback, Note, Author
 
 class CommentAddForm(forms.Form):
     text = forms.CharField( max_length = 250, widget=forms.Textarea )
 
-class NoteAddForm(forms.Form):
-    title = forms.CharField( label='Заголовок цитаты', max_length=100, widget=forms.TextInput(attrs={'class':'form-control'}) )
-    text = forms.CharField( label='Введите цитату', max_length=1024, widget=forms.Textarea )
-    author = forms.CharField( label='Автор', max_length=100 )
-    category = forms.ModelChoiceField( label='Категория', queryset=NoteCategory.objects.all() )
+class NoteAddForm(forms.ModelForm):
+    author = forms.ModelChoiceField(
+                                    queryset=Author.objects.all(),
+                                    required=False,
+                                    empty_label="Выберите автора"
+                                    )
+    
+    new_author = forms.CharField(
+                                 max_length=100,
+                                 required=False,
+                                 label="Имя нового автора",
+                                 help_text="(введите если нет в основном списке)"
+                                )
+
+    class Meta:
+        model = Note
+        fields = [ 'title', 'text', 'author','new_author', 'category' ]
+    
+    def __init__(self, *args, **kwargs):
+        super(NoteAddForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
 
 class FeedbackForm(forms.ModelForm):
     class Meta:

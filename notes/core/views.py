@@ -50,16 +50,22 @@ def note_add(request):
         note_add_form = NoteAddForm( request.POST )
 
         if note_add_form.is_valid():
-            data = note_add_form.cleaned_data
-            author, created = Author.objects.get_or_create(name=data['author'])
+            note = note_add_form.save(commit=False)
+            author = note_add_form.cleaned_data['author']
+            new_author = note_add_form.cleaned_data['new_author']
+            
+            if author is None and new_author:
+                author, already_in_list = Author.objects.get_or_create(name=new_author)
+            
             Note.objects.create(
-                                title = data['title'],
-                                text = data['text'],
+                                title = note_add_form.cleaned_data['title'],
+                                text = note_add_form.cleaned_data['text'],
                                 author = author,
-                                category = data['category'],
+                                category = note_add_form.cleaned_data['category'],
                                 profile=request.user.profile
                                 )
-
+            return redirect('notes')
+        
         return redirect(notes)
     
     context = {
@@ -193,3 +199,21 @@ def note_unlike(request, note_id):
     NoteLike.objects.filter(note=note, profile=profile).delete()
 
     return redirect(redirect_url)
+
+@login_required
+def note_edit(request, note_id):
+    note = Note.objects.get( id = note_id )
+    
+    if note.profile != request.user.profile:
+        raise Http404
+    
+    form = NoteAddForm( instance = note )
+
+    if request.method == 'POST':
+        form = NoteAddForm( request.POST, instance = note )
+        if form.is_valid:
+            form.save()
+
+            return redirect('note_detail', note.id)
+          
+    return render(request, 'note_edit.html', {'form':form})

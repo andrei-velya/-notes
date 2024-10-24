@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<div id="app">
+       <h1>Бонусная страница VUE.js</h1>
+       <h2>Мои любимые фильмы</h2>
+       <ul>
+              <li v-for="movie in movies">[[movie]]</li>
+       </ul>
+       <br>
+       <h2>Количество кликов</h2>
+       <p v-if="clicks >= 10">Не останавливайся</p>
+       <p v-if="clicks >= 50">Лови: <a href="link">[[link]]</a> </p>
+       <p>[[ clicks ]]</p>
+       <button @click="addClicks">Клик</button>
+       <button @click="getBonusClicks">Получить бонусы</button>
+
+</div>
+          
+<script>
+       const { createApp } = Vue
+       createApp(
+                     {
+                     delimiters: [ '[[', ']]' ],
+                         
+                     data(){
+                            return{
+                                   movies: ['Огниво','Ужасающий 3','Руки Вверх!','Анора','Кореша'],
+                                   clicks: 0,
+                                   link: 'https://ya.ru/'
+                                   }
+                            },
+                         
+                     methods: {
+                               addClicks(){
+                                           this.clicks = this.clicks + 10
+                                           },
+                               getBonusClicks(){
+                                                const baseUrl = 'http://localhost:8000'
+                                                axios.get(`${baseUrl}/api/rest/clicks`)
+                                                     .then(response => {this.clicks += response.data.clicks})
+                                                }
+                                   
+                               }
+                      },
+                ).mount('#app')
+</script>    
+{% endblock %}

@@ -217,3 +217,6 @@ def note_edit(request, note_id):
             return redirect('note_detail', note.id)
           
     return render(request, 'note_edit.html', {'form':form})
+
+def vue(request):
+    return render(request, 'vue.html')

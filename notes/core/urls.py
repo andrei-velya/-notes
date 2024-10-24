@@ -33,6 +33,7 @@ urlpatterns = [
     path('like/<int:note_id>', note_like, name='note_like'),
     path('unlike/<int:note_id>', note_unlike, name='note_unlike'),
 
-    path('notes/<int:note_id>/edit', note_edit, name='note_edit')
+    path('notes/<int:note_id>/edit', note_edit, name='note_edit'),
+    path( 'vue', vue, name='vue' )
     
 ]

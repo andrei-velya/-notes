@@ -71,7 +71,7 @@ class NoteComment(models.Model):
                              default=1 
                              )
     text = models.CharField( max_length=280 )
-    author = models.CharField( max_length=255, default='Анонимус' )
+    profile = models.ForeignKey( Profile, on_delete=models.CASCADE )
     created_date = models.DateTimeField( auto_now_add=True )
 
 class Feedback(models.Model):

@@ -2,8 +2,9 @@
 
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
 
-<div class="container-post">
+<div class="container-post" >
     <!-- Блок выбранной цитаты -->
     <div class="post-card">
         <h3><a href="{% url 'note_detail' note.id %}">{{note.title}}</a></h3>
@@ -41,11 +42,15 @@
         <h4>Комментарии ({{ comments|length }})</h4>
         {% for comment in comments %}
         <div class="comment">
-            <p class="comment-author">{{comment.author}}</p>
-            <p class="comment-date">{{comment.date}}</p>
+            <p class="comment-author">{{comment.profile.user}}</p>
+            <p class="comment-date">{{comment.created_date}}</p>
             <p class="comment-text">{{comment.text}}</p>
         </div>
         {% endfor %}
+    </div>
+    <!-- Блок комментариев вывод посредством AJAX -->
+    <h4>Комментарии-AJAX ({{ comments|length }})</h4>
+    <div class="comments-section-ajax" data-note-id="{{ note.id }}">
     </div>
     <!-- Блок формы добавления комментариев -->
     <div class="comment-form">
@@ -58,6 +63,7 @@
         </form>
     </div>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{% static 'js/note_detail.js' %}"> </script>
 
 {% endblock %}

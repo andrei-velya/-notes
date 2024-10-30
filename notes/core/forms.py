@@ -6,6 +6,13 @@ from .models import NoteCategory, Feedback, Note, Author
 class CommentAddForm(forms.Form):
     text = forms.CharField( max_length = 250, widget=forms.Textarea )
 
+    def save(self, commit=True):
+        comment = super().save(commit=False)
+        if self.profile.user:
+            comment.profile = self.profile
+        return comment
+
+
 class NoteAddForm(forms.ModelForm):
     author = forms.ModelChoiceField(
                                     queryset=Author.objects.all(),

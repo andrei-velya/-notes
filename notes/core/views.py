@@ -101,7 +101,8 @@ def note_detail( request, note_id ):
             data = comment_form.cleaned_data
             NoteComment.objects.create(
                 note = note,
-                text = data['text']
+                text = data['text'],
+                profile = request.user.profile
             )
 
             return redirect('note_detail',note_id) 

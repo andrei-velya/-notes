@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import random
-from core.models import Note, NoteComment
+from core.models import Note, NoteComment, Author
+from .serializers import AuthorSerializer
 
 # Create your views here.
 
@@ -26,3 +27,10 @@ def note_comments(request, note_id):
                              })
     
     return JsonResponse({'comments' : new_comments}, safe=False)
+
+@api_view(['GET'])
+def author_list(request):
+    authors = Author.objects.all()
+    serializer = AuthorSerializer( authors, many=True )
+
+    return Response({ 'authors_serializer':serializer.data })

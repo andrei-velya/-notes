@@ -1,6 +1,8 @@
 <!-- HTML-шаблон, все цитаты -->
 
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 
 <!-- Блок с простыней всех цитат  -->
@@ -35,7 +37,7 @@
 </div>
 
 <!-- Боковая панель с выбором категорий -->
-<aside class="sidebar">
+<aside class="sidebar" >
     <h2>Выбор категорий</h2>
     <ul>
         {% for category in categories %}
@@ -57,9 +59,35 @@
             {% endif %}
         {% endfor %}
     </ul>
+    <h2>VUE-авторы</h2>
+    <div class="author-list-section-ajax" id="sidebar-vue">
+        <p>[[message]]</p>
+        <ul>
+            <li v-for="author in authors" :key="author.id"><a :href="'?author='+author.id">[[author.name]]</a></li>
+        </ul>
+    </div>
 
 </aside>
 
+<script>
+    const { createApp } = Vue
+    createApp({
+               delimiters: ['[[',']]'],
+
+               data(){return{
+                             baseUrl:'http://localhost:8000',
+                             authors: [],
+                             message: 'Hello, Vue!'
+                             }},
+               methods: {
+                         getAuthors(){
+                                      axios.get(`${this.baseUrl}/api/notes/authors`)
+                                           .then(response => {console.log(response.data.authors_serializer),this.authors = response.data.authors_serializer})
+                         }
+                        },
+               mounted(){ this.getAuthors() }
+               }).mount('#sidebar-vue')
+</script>
 
 {% endblock %}
 

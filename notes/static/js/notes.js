@@ -1,6 +1,5 @@
-function loadComments(){
+function loadAuthors(){
        let baseUrl = 'http://localhost:8000';
-       let noteId = $('.comments-section-ajax').data('note-id')
        let url = baseUrl + `/api/notes/${noteId}/comments`
    
        $.ajax({
